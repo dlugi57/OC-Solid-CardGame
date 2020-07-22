@@ -5,6 +5,10 @@ import java.util.ArrayList;
 public class Hand {
     ArrayList<PlayingCard> cards;
 
+    public Hand() {
+        cards = new ArrayList<PlayingCard>();
+    }
+
     public void addCard(PlayingCard pc) {
         cards.add(pc);
     }
