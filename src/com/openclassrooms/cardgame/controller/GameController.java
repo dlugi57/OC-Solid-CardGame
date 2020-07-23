@@ -1,36 +1,32 @@
 package com.openclassrooms.cardgame.controller;
 
+import com.openclassrooms.cardgame.games.GameEvaluator;
+import com.openclassrooms.cardgame.games.HighCardGameEvaluator;
 import com.openclassrooms.cardgame.model.Deck;
 import com.openclassrooms.cardgame.model.Player;
 import com.openclassrooms.cardgame.model.PlayingCard;
-import com.openclassrooms.cardgame.view.View;
+import com.openclassrooms.cardgame.view.CommandLineView;
+import com.openclassrooms.cardgame.view.GameViewable;
 
 import java.util.ArrayList;
 
 
-
-
 public class GameController {
-
-    enum GameState {
-        AddingPlayers,
-        CardsDealt,
-        WinnerRevealed
-    }
 
     Deck deck;
     ArrayList<Player> players;
     Player winner;
-    View view;
+    GameViewable view;
     GameState gameState;
-
-
-    public GameController(View view, Deck deck) {
+    GameEvaluator evaluator;
+    public GameController(GameViewable view, Deck deck, GameEvaluator _evaluator) {
         this.view = view;
         this.deck = deck;
-        players = new ArrayList<Player> ();
+        players = new ArrayList<Player>();
         gameState = GameState.AddingPlayers;
         view.setController(this);
+        this.evaluator = _evaluator;
+        this.evaluator = new HighCardGameEvaluator();
     }
 
     public void run() {
@@ -58,7 +54,6 @@ public class GameController {
         }
     }
 
-
     public void startGame() {
         if (gameState != GameState.CardsDealt) {
             deck.shuffle();
@@ -84,39 +79,13 @@ public class GameController {
         rebuildDeck();
         gameState = GameState.WinnerRevealed;
     }
-
+void restartGame(){
+        rebuildDeck();
+        gameState = GameState.AddingPlayers;
+}
     void evaluateWinner() {
-        Player bestPlayer = null;
-        int bestRank = -1;
-        int bestSuit = -1;
 
-        for (Player player : players) {
-            boolean newBestPlayer = false;
-
-            if (bestPlayer == null) {
-                newBestPlayer = true;
-            }
-            else {
-                PlayingCard pc = player.getCard(0);
-                int thisRank = pc.getRank().value();
-                if (thisRank >= bestRank) {
-                    if (thisRank > bestRank) {
-                        newBestPlayer = true;
-                    } else {
-                        if (pc.getSuit().value() > bestSuit) {
-                            newBestPlayer = true;
-                        }
-                    }
-                }
-            }
-            if (newBestPlayer) {
-                bestPlayer = player;
-                PlayingCard pc = player.getCard(0);
-                bestRank = pc.getRank().value();
-                bestSuit = pc.getSuit().value();
-            }
-        }
-        winner = bestPlayer;
+        winner = evaluator.evaluateWinner(players);
     }
 
     void displayWinner() {
@@ -127,6 +96,12 @@ public class GameController {
         for (Player player : players) {
             deck.returnCardToDeck(player.removeCard());
         }
+    }
+
+    enum GameState {
+        AddingPlayers,
+        CardsDealt,
+        WinnerRevealed
     }
 
 }

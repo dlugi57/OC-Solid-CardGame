@@ -4,13 +4,14 @@ import com.openclassrooms.cardgame.controller.GameController;
 
 import java.util.Scanner;
 
-public class View {
+public class CommandLineView implements GameViewable {
+
     GameController controller;
     Scanner keyboard = new Scanner(System.in);
-    public void setController(GameController gc) {
-         this.controller = gc;
-    }
 
+    public void setController(GameController gc) {
+        this.controller = gc; // not gc?
+    }
 
     public void promptForPlayerName() {
         System.out.println("Enter player's name, or press return to continue:");
@@ -50,6 +51,5 @@ public class View {
     public void showWinner(String winnerName) {
         System.out.println("Winner: "+winnerName);
     }
-
 
 }
