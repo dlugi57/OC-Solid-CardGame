@@ -1,11 +1,10 @@
 package com.openclassrooms.cardgame.games;
 
-import com.openclassrooms.cardgame.model.Player;
-import com.openclassrooms.cardgame.model.PlayingCard;
+import com.openclassrooms.cardgame.model.IPlayer;
 
 import java.util.List;
 
 public interface GameEvaluator {
-    public Player evaluateWinner(List<Player> players);
+    public IPlayer evaluateWinner(List<IPlayer> players);
 }
 
